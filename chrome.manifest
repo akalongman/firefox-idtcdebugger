@@ -1,0 +1,3 @@
+content		itdc_debugger		chrome/content/ xpcnativewrappers=no
+
+overlay		chrome://firebug/content/firebugOverlay.xul		chrome://itdc_debugger/content/itdc_debugger.xul

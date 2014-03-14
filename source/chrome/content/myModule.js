@@ -1,60 +1,56 @@
 /* See license.txt for terms of usage */
 
 define([
-    "firebug/lib/object",
-    "firebug/lib/trace",
-],
-function(Obj, FBTrace) {
+		"firebug/lib/object",
+		"firebug/lib/trace",
+	],
+	function (Obj, FBTrace) {
 
-// ********************************************************************************************* //
-// Custom Module Implementation
+		// ********************************************************************************************* //
+		// Custom Module Implementation
 
-Firebug.MyModule = Obj.extend(Firebug.Module,
-{
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-    // Initialization
+		Firebug.MyModule = Obj.extend(Firebug.Module, {
+			// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+			// Initialization
 
-    initialize: function(owner)
-    {
-        Firebug.Module.initialize.apply(this, arguments);
+			initialize: function (owner) {
+				Firebug.Module.initialize.apply(this, arguments);
 
-        // TODO: Module initialization (there is one module instance per browser window)
+				// TODO: Module initialization (there is one module instance per browser window)
 
-        if (FBTrace.DBG_ITDCDEBUGGER)
-            FBTrace.sysout("ITDCDebugger; MyModule.initialize", this);
+				if (FBTrace.DBG_ITDCDEBUGGER)
+					FBTrace.sysout("ITDCDebugger; MyModule.initialize", this);
 
 
-        // The main Firebug toolbar can't be extended from a panel object since it's
-        // crated as soon as the panel is actualy selected by the use (which doesn't
-        // have to even happen). That's why we are creating the button here, in a module.
-        this.buttons = [];
-        this.buttons.push("-");
-        this.buttons.push({
-            tooltiptext: "toolbar.button.tooltip",
-            image: "chrome://itdcdebugger/skin/button.png",
-            command: FBL.bindFixed(this.onHello, this)
-        });
+				// The main Firebug toolbar can't be extended from a panel object since it's
+				// crated as soon as the panel is actualy selected by the use (which doesn't
+				// have to even happen). That's why we are creating the button here, in a module.
+				this.buttons = [];
+				this.buttons.push("-");
+				this.buttons.push({
+					tooltiptext: "toolbar.button.tooltip",
+					image: "chrome://itdcdebugger/skin/button.png",
+					command: FBL.bindFixed(this.onHello, this)
+				});
 
-        for (var i=0; i<this.buttons.length; i++)
-            Firebug.chrome.appendToolbarButton(this.buttons[i]);
-    },
+				for (var i = 0; i < this.buttons.length; i++)
+					Firebug.chrome.appendToolbarButton(this.buttons[i]);
+			},
 
-    shutdown: function()
-    {
-      Firebug.Module.shutdown.apply(this, arguments);
+			shutdown: function () {
+				Firebug.Module.shutdown.apply(this, arguments);
 
-      for (var i=0; i<this.buttons.length; i++)
-        Firebug.chrome.removeToolbarButton(this.buttons[i]);
+				for (var i = 0; i < this.buttons.length; i++)
+					Firebug.chrome.removeToolbarButton(this.buttons[i]);
 
-      if (FBTrace.DBG_ITDCDEBUGGER)
-        FBTrace.sysout("ITDCDebugger; MyModule.shutdown");
-    },
+				if (FBTrace.DBG_ITDCDEBUGGER)
+					FBTrace.sysout("ITDCDebugger; MyModule.shutdown");
+			},
 
-    onHello: function()
-    {
-        alert(FBL.$STR("toolbar.msg.hello3"));
-    }
-});
+			onHello: function () {
+				alert(FBL.$STR("toolbar.msg.hello3"));
+			}
+		});
 
-return Firebug.MyModule;
-});
+		return Firebug.MyModule;
+	});

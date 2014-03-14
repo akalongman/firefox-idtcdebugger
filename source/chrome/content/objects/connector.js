@@ -14,39 +14,8 @@ define([
 			defaultContent = ITDCDBGSite.innerHTML;
 		}
 
-		var ITDCDBGButtons = [];
-		ITDCDBGButtons.push({
-			label: "General",
-			tooltiptext: "These are messages that can be placed anywhere in the code and are displayed in the Drupal for Firebug console window. They work in much the same was as drupal_set_message().",
-			hook: "general"
-		}, {
-			label: "SQL",
-			tooltiptext: "This is a Drupal for Firebug display of the Devel module query log.",
-			hook: "sql"
-		}, {
-			label: "Forms",
-			tooltiptext: "All forms that are processed by hook_form_alter() are displayed here. Any changes(Yellow), additions(Green), or deletions(Red) are appropriately color coordinated in the output.",
-			hook: "hook_form_alter"
-		}, {
-			label: "Users",
-			tooltiptext: "The user records and associated $op performed on each one by hook_user().",
-			hook: "hook_user"
-		}, {
-			label: "Nodes",
-			tooltiptext: "All nodes that are processed by hook_nodeapi() are displayed here along with the $op applied to them.",
-			hook: "hook_nodeapi"
-		}, {
-			label: "Views",
-			tooltiptext: "Each view that is loaded or themed is displayed with any changes(Yellow), additions(Green), or deletions(Red) are appropriately color coordinated in the output.",
-			hook: "hook_views"
-		}, {
-			label: "Execute PHP",
-			tooltiptext: "This tab allows PHP code to be executing in much the same was as the \"Execute PHP\" block works in the Devel module. Users must be given special permissions to use this feature.",
-			hook: "php"
-		});
-
 		Firebug.Connection = Obj.extend(Firebug.Module, {
-			buttons: ITDCDBGButtons,
+			buttons: [],
 			api: DFFapi,
 			currentButton: "general",
 			panel: defaultContent,
@@ -64,7 +33,52 @@ define([
 
 				this.api = this.api.getCharPref("API").toUpperCase();
 
-				this.MyTemplate.render(this.panel);;
+				var url = window.content.document.location;
+
+				var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+				//var pattern = new RegExp('^(\.+)$','i'); // fragment locater
+
+    				if (!pattern.test(url)) {
+					FBTrace.sysout("ITDCDebugger; not valid url: "+url, this);
+					return false;
+				}
+
+				this.panel = '<iframe src="'+url+'" width="100%" height="100%"></iframe>';
+
+				this.MyTemplate.render(this.panel);
+
+/*Components.utils.import("resource://gre/modules/FileUtils.jsm");
+
+var env = Components.classes["@mozilla.org/process/environment;1"]
+                    .getService(Components.interfaces.nsIEnvironment);
+var shell = new FileUtils.File(env.get("COMSPEC"));
+var args = ["/c", "ping stackoverflow.org"];
+
+var process = Components.classes["@mozilla.org/process/util;1"]
+                        .createInstance(Components.interfaces.nsIProcess);
+process.init(shell);
+process.runAsync(args, args.length);*/
+
+
+//var open_file = document.getElementsByClassName('menu-top');
+var open_file = window.content.document.getElementsByTagName('a');
+if (open_file) {
+	for (var key = 0; key < open_file.length; key++) {
+		FBTrace.sysout("ITDCDebugger; "+key, this);
+
+		open_file[key].addEventListener('click', function(e) {
+			e.preventDefault()
+				alert('CLICK');
+
+			if (this.dataset.openfile) {
+				var filePath = this.dataset.openfile.trim();
+				alert('CLICK');
+			};
+		});
+	}
+}
+
+
 
 				if (FBTrace.DBG_ITDCDEBUGGER) {
 					FBTrace.sysout("ITDCDebugger; ITDCDBGConnection.initialize", this);
@@ -75,9 +89,9 @@ define([
 				Firebug.Module.shutdown.apply(this, arguments);
 				this.api.removeObserver("", this);
 
-				for (var i = 0; i < this.buttons.length; i++) {
+				/*for (var i = 0; i < this.buttons.length; i++) {
 					Firebug.chrome.removeToolbarButton(this.buttons[i]);
-				}
+				}*/
 
 				if (FBTrace.DBG_ITDCDEBUGGER) {
 					FBTrace.sysout("ITDCDebugger; ITDCDBGConnection.shutdown");

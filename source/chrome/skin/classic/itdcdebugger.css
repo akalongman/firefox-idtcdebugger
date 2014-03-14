@@ -1,0 +1,9 @@
+/* Style applied on the panel node.
+
+   Rule syntax: .panelNode-<ext-id> */
+/* line 4, ../../../sass/itdcdebugger.scss */
+.panelNode-itdcdebugger, .panelNode-itdcdebugger iframe html body {
+  padding: .5em 1ex;
+  font-size: 1.25em;
+  font-family: Helvetica;
+}

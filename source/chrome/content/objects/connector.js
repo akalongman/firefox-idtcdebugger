@@ -42,8 +42,8 @@ define([
 					FBTrace.sysout("ITDCDebugger; not valid url: "+url, this);
 					return false;
 				}
-
-				this.panel = '<iframe src="'+url+'" width="100%" height="100%"></iframe>';
+				url += '/itdc/system/debug';
+				this.panel = '<iframe id="itdcdebugger_iframe" src="'+url+'" width="100%" height="100%"></iframe>';
 
 				this.MyTemplate.render(this.panel);
 
@@ -59,17 +59,19 @@ var process = Components.classes["@mozilla.org/process/util;1"]
 process.init(shell);
 process.runAsync(args, args.length);*/
 
+//var iframe = document.getElementById('itdcdebugger_iframe');
 
-//var open_file = document.getElementsByClassName('menu-top');
-var open_file = window.content.document.getElementsByTagName('a');
+FBTrace.sysout("ITDCDebugger; IFRAME: "+Firebug.Connection.MyTemplate, this);
+
+var open_file = window.content.document.getElementsByClassName('open_file');
+//alert(open_file.length);
+
 if (open_file) {
 	for (var key = 0; key < open_file.length; key++) {
-		FBTrace.sysout("ITDCDebugger; "+key, this);
+		//FBTrace.sysout("ITDCDebugger; "+key, this);
 
 		open_file[key].addEventListener('click', function(e) {
 			e.preventDefault()
-				alert('CLICK');
-
 			if (this.dataset.openfile) {
 				var filePath = this.dataset.openfile.trim();
 				alert('CLICK');
@@ -160,6 +162,9 @@ if (open_file) {
 				render: function (parentNode) {
 					this.tag.replace({}, parentNode);
 				}
+
+
+
 			})
 		}
 
